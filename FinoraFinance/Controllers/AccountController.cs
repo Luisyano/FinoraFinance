@@ -45,7 +45,7 @@ namespace FinoraFinance.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                TempData["SuccessMessage"] = "Usuario registrado exitosamente.";
+                TempData["Msg"] = "¡Registro Exitoso!";
                 return RedirectToAction("Index", "Home");
             }
             foreach (var error in result.Errors)
@@ -56,11 +56,11 @@ namespace FinoraFinance.Controllers
         }
 
         [HttpGet] 
-        public IActionResult Login() => View();
+        public IActionResult IniciarSesion() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(Login model)
+        public async Task<IActionResult> IniciarSesion(Login model)
         {
             if (!ModelState.IsValid)
             {
@@ -85,7 +85,6 @@ namespace FinoraFinance.Controllers
                         );
                         if (result.Succeeded)
                         {
-                            TempData["SuccessMessage"] = "Inicio de sesión exitoso."; 
                             return RedirectToAction("Index", "Home");
                         }
                         else
@@ -95,6 +94,13 @@ namespace FinoraFinance.Controllers
                         }
                 }
             }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CerrarSesion()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -1,8 +1,37 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="card">
+    <div class="card-header">
+        <h2>Bienvenido a Finora Finance</h2>
+        <h3>Tu control financiero personal</h3>
+    </div>
+
+    @if (TempData["Msg"] != null)
+    {
+        <div class="alert alert-success">@TempData["Msg"]</div>
+    }
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="alert alert-success">
+            ¡Hola <strong>@User.Identity.Name</strong>! Has iniciado sesión correctamente.
+        </div>
+        <div class="btn-group">
+            <a href="#" class="btn btn-primary">Mis Gastos</a>
+            <a href="#" class="btn btn-outline">Mis Ingresos</a>
+            <a href="#" class="btn btn-outline">Reportes</a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Regístrate o inicia sesión para comenzar a gestionar tus finanzas.
+        </div>
+        <div class="btn-group">
+            <a asp-controller="Account" asp-action="Registrarse" class="btn btn-primary">Registrarse</a>
+            <a asp-controller="Account" asp-action="IniciarSesion" class="btn btn-outline">Iniciar Sesión</a>
+        </div>
+    }
 </div>
