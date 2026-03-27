@@ -4,7 +4,7 @@ namespace FinoraFinance.Models
 {
     public class Usuario : IdentityUser
     {
-        public string? Username { get; set; } 
-
+        public string? Telefono { get; set; }
+        public string? FullName { get; set; }
     }
 }
