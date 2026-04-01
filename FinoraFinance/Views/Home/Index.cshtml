@@ -2,12 +2,8 @@
     ViewData["Title"] = "Inicio";
 }
 
-<div class="card">
-    <div class="card-header">
-        <h2>Bienvenido a Finora Finance</h2>
-        <h3>Tu control financiero personal</h3>
-    </div>
-
+<div class="dashboard">
+    
     @if (TempData["Msg"] != null)
     {
         <div class="alert alert-success">@TempData["Msg"]</div>
@@ -15,23 +11,116 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <div class="alert alert-success">
-            ¡Hola <strong>@User.Identity.Name</strong>! Has iniciado sesión correctamente.
+        <div class="welcome-card">
+            <h1>Hola, <span class="highlight">@User.Identity.Name</span></h1>
+            <p>Bienvenido a Finora Finance.</p>
         </div>
-        <div class="btn-group">
-            <a href="#" class="btn btn-primary">Mis Gastos</a>
-            <a href="#" class="btn btn-outline">Mis Ingresos</a>
-            <a href="#" class="btn btn-outline">Reportes</a>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>@ViewBag.SaldoTotal.ToString("C")</h3>
+                <p>Saldo Total</p>
+            </div>
+            <div class="stat-card">
+                <h3>@ViewBag.TotalCuentas</h3>
+                <p>Cuentas Activas</p>
+            </div>
+            <div class="stat-card">
+                <h3>0</h3>
+                <p>Registros este mes</p>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h3>Acciones rápidas</h3>
+            <div class="action-buttons">
+                <a asp-controller="Cuentas" asp-action="Create" class="action-btn primary">
+                    Nueva Cuenta
+                </a>
+                <a href="#" class="action-btn success">
+                    Registrar Gasto
+                </a>
+                <a href="#" class="action-btn info">
+                    Registrar Ingreso
+                </a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Mis Cuentas</h3>
+                <a asp-controller="Cuentas" asp-action="Index" class="btn-link">Ver todas</a>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.UltimasCuentas != null && ((List<FinoraFinance.Models.Cuenta>)ViewBag.UltimasCuentas).Any())
+                {
+                    <ul class="list-items">
+                        @foreach (var cuenta in (List<FinoraFinance.Models.Cuenta>)ViewBag.UltimasCuentas)
+                        {
+                            <li>
+                                <span class="item-name">@cuenta.Nombre</span>
+                                <span class="item-value">@cuenta.SaldoInicial.ToString("C")</span>
+                                <span class="item-currency">@cuenta.Moneda</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="empty-message">No tienes cuentas creadas.</p>
+                    <a asp-controller="Cuentas" asp-action="Create" class="btn-sm">Crear primera cuenta</a>
+                }
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Tips financieros</h3>
+            </div>
+            <div class="card-body">
+                <ul class="tips-list">
+                    <li>Registra tus gastos diarios para tener control total</li>
+                    <li>Define un presupuesto mensual por categoría</li>
+                    <li>Ahorra al menos el 20 por ciento de tus ingresos</li>
+                    <li>Revisa tus cuentas regularmente</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Actividad reciente</h3>
+            </div>
+            <div class="card-body">
+                <p class="empty-message">Aún no hay registros de gastos o ingresos.</p>
+                <a href="#" class="btn-sm">Registrar primer movimiento</a>
+            </div>
         </div>
     }
     else
     {
-        <div class="alert alert-info">
-            Regístrate o inicia sesión para comenzar a gestionar tus finanzas.
+        <div class="hero-section">
+            <h1>Finora Finance</h1>
+            <p>Controla tus finanzas personales de manera simple y efectiva</p>
+            <div class="hero-buttons">
+                <a asp-controller="Account" asp-action="Registrarse" class="btn btn-primary btn-lg">Comenzar ahora</a>
+                <a asp-controller="Account" asp-action="IniciarSesion" class="btn btn-outline btn-lg">Ya tengo cuenta</a>
+            </div>
         </div>
-        <div class="btn-group">
-            <a asp-controller="Account" asp-action="Registrarse" class="btn btn-primary">Registrarse</a>
-            <a asp-controller="Account" asp-action="IniciarSesion" class="btn btn-outline">Iniciar Sesión</a>
+
+        <div class="features">
+            <div class="feature">
+                <h3>Control de gastos</h3>
+                <p>Registra y clasifica cada gasto para entender tus hábitos financieros.</p>
+            </div>
+            <div class="feature">
+                <h3>Múltiples cuentas</h3>
+                <p>Administra tus cuentas bancarias y billeteras en un solo lugar.</p>
+            </div>
+            <div class="feature">
+                <h3>Reportes claros</h3>
+                <p>Visualiza tus finanzas con reportes simples y efectivos.</p>
+            </div>
         </div>
     }
 </div>

@@ -7,8 +7,7 @@ namespace FinoraFinance.Data
     public class AppDbContext : IdentityDbContext<Usuario>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-
-        }
+        {}
+        public DbSet<Cuenta> Cuentas { get; set; }
     }
 }

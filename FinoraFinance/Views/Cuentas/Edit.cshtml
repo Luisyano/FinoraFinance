@@ -1,0 +1,48 @@
+﻿@model FinoraFinance.Models.Cuenta
+
+@{
+    ViewData["Title"] = "Editar Cuenta";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h2>Editar Cuenta</h2>
+        <h3>Modifica los datos de tu cuenta</h3>
+    </div>
+
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group">
+            <label asp-for="Nombre" class="form-label"></label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Moneda" class="form-label"></label>
+            <select asp-for="Moneda" class="form-control">
+                <option value="">Selecciona una moneda</option>
+                <option value="PEN">PEN (Soles)</option>
+                <option value="USD">USD (Dólares)</option>
+            </select>
+            <span asp-validation-for="Moneda" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SaldoInicial" class="form-label"></label>
+            <input asp-for="SaldoInicial" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="SaldoInicial" class="text-danger"></span>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-outline">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

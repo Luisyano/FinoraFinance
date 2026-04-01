@@ -11,9 +11,9 @@ namespace FinoraFinance.Controllers
         private readonly SignInManager<Usuario> _signInManager;
 
         public AccountController(
-            //Clase que maneja usuarios: crear, buscar, modificar, eliminar - BORRAR
+            
             UserManager<Usuario> userManager,
-            //Clase que maneja sesiones: iniciar, cerrar, verificar - BORRAR
+            
             SignInManager<Usuario> signInManager)
         {
             _userManager = userManager;
@@ -32,11 +32,11 @@ namespace FinoraFinance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Registrarse(Registrarse model)
         {
-            //NOTA N3 Si algo falla, muestra el formulario otra vez con los errores.
+            
             if (!ModelState.IsValid) return View(model);
             var user = new Usuario
             {
-                UserName = model.Email,  //NOTA N4  ← Para iniciar sesión con email
+                UserName = model.Email,  
                 Email = model.Email,
                 Telefono = model.Telefono,
                 FullName = model.FullName
@@ -68,7 +68,7 @@ namespace FinoraFinance.Controllers
             }
             else
             {
-                // NOTA 5 - _userManager.FindByEmailAsync	Busca en la base de datos un usuario con ese email
+                
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {

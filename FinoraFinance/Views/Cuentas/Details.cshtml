@@ -1,0 +1,28 @@
+﻿@model FinoraFinance.Models.Cuenta
+
+@{
+    ViewData["Title"] = "Detalles de Cuenta";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h2>Detalles de Cuenta</h2>
+        <h3>@Model.Nombre</h3>
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Nombre</dt>
+        <dd class="col-sm-9">@Model.Nombre</dd>
+
+        <dt class="col-sm-3">Moneda</dt>
+        <dd class="col-sm-9">@Model.Moneda</dd>
+
+        <dt class="col-sm-3">Saldo Inicial</dt>
+        <dd class="col-sm-9">@Model.SaldoInicial.ToString("C")</dd>
+    </dl>
+
+    <div class="btn-group">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+        <a asp-action="Index" class="btn btn-outline">Volver</a>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+﻿@model IEnumerable<FinoraFinance.Models.Cuenta>
+
+@{
+    ViewData["Title"] = "Mis Cuentas";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h2>Mis Cuentas</h2>
+        <h3>Administra tus cuentas bancarias y billeteras</h3>
+    </div>
+
+    @if (TempData["Msg"] != null)
+    {
+        <div class="alert alert-success">@TempData["Msg"]</div>
+    }
+
+    <div class="mb-3">
+        <a asp-action="Create" class="btn btn-primary">+ Nueva Cuenta</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No tienes cuentas creadas. Haz clic en "Nueva Cuenta" para comenzar.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Moneda</th>
+                        <th>Saldo Inicial</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.Nombre</strong></td>
+                            <td>@item.Moneda</td>
+                            <td>@item.SaldoInicial.ToString("C")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline">Editar</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline">Detalles</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

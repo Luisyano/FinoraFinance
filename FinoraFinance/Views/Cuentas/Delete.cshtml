@@ -1,0 +1,35 @@
+﻿@model FinoraFinance.Models.Cuenta
+
+@{
+    ViewData["Title"] = "Eliminar Cuenta";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h2>Eliminar Cuenta</h2>
+        <h3>¿Estás seguro de que quieres eliminar esta cuenta?</h3>
+    </div>
+
+    <div class="alert alert-warning">
+        Esta acción no se puede deshacer.
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Nombre</dt>
+        <dd class="col-sm-9">@Model.Nombre</dd>
+
+        <dt class="col-sm-3">Moneda</dt>
+        <dd class="col-sm-9">@Model.Moneda</dd>
+
+        <dt class="col-sm-3">Saldo Inicial</dt>
+        <dd class="col-sm-9">@Model.SaldoInicial.ToString("C")</dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <div class="btn-group">
+            <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+            <a asp-action="Index" class="btn btn-outline">Cancelar</a>
+        </div>
+    </form>
+</div>
