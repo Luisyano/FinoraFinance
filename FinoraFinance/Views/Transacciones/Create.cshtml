@@ -1,0 +1,124 @@
+﻿@model FinoraFinance.Models.Transaccion
+
+@{
+    ViewData["Title"] = "Nuevo Registro";
+    var cuentas = ViewBag.Cuentas as List<FinoraFinance.Models.Cuenta>;
+    var etiquetas = ViewBag.Etiquetas as List<FinoraFinance.Models.Etiqueta>;
+    @if (TempData["ErrorDetalle"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorDetalle"]</div>
+    }
+}
+
+<div class="card">
+    <div class="card-header">
+        <h2>Nuevo Registro</h2>
+        <h3>Añade un ingreso, gasto o gusto</h3>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="tipo-buttons">
+            <button type="button" class="tipo-btn" data-tipo="Ingreso">
+                <i class='bx bx-dollar-circle'></i> Ingreso
+            </button>
+            <button type="button" class="tipo-btn" data-tipo="Gasto">
+                <i class='bx bx-shopping-bag'></i> Gasto
+            </button>
+            <button type="button" class="tipo-btn" data-tipo="Gusto">
+                <i class='bx bx-pizza'></i> Gusto
+            </button>
+        </div>
+        <input type="hidden" asp-for="Tipo" id="Tipo" />
+
+        <div class="form-group">
+            <label asp-for="CuentaId">Cuenta</label>
+            <select asp-for="CuentaId" class="form-control" required>
+                <option value="">Selecciona una cuenta</option>
+                @if (cuentas != null)
+                {
+                    foreach (var cuenta in cuentas)
+                    {
+                        <option value="@cuenta.Id">@cuenta.Nombre (@cuenta.Moneda) - Saldo: @cuenta.SaldoInicial.ToString("C")</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="CuentaId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Monto">Monto</label>
+            <div class="monto-input">
+                <input asp-for="Monto" class="form-control" type="number" step="0.01" placeholder="0.00" />
+                <span class="moneda-indicador" id="monedaIndicador">PEN</span>
+            </div>
+            <span asp-validation-for="Monto" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EtiquetaId">Etiqueta</label>
+            <div class="etiqueta-group">
+                <select asp-for="EtiquetaId" class="form-control">
+                    <option value="">Selecciona una etiqueta</option>
+                    @if (etiquetas != null)
+                    {
+                        foreach (var etiqueta in etiquetas)
+                        {
+                            <option value="@etiqueta.Id">@etiqueta.Nombre</option>
+                        }
+                    }
+                </select>
+                <button type="button" class="btn btn-outline" id="btnNuevaEtiqueta">
+                    <i class='bx bx-plus'></i> Nueva
+                </button>
+            </div>
+            <span asp-validation-for="EtiquetaId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Fecha">Fecha</label>
+            <input asp-for="Fecha" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="Fecha" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Nota">Nota (opcional)</label>
+            <textarea asp-for="Nota" class="form-control" rows="3" placeholder="Escribe una nota..."></textarea>
+            <span asp-validation-for="Nota" class="text-danger"></span>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">
+                <i class='bx bx-save'></i> Guardar
+            </button>
+            <a asp-action="Index" class="btn btn-outline">
+                <i class='bx bx-list-ul'></i> Ver todos
+            </a>
+        </div>
+    </form>
+</div>
+
+<div id="modalEtiqueta" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h3><i class='bx bx-tag'></i> Nueva Etiqueta</h3>
+        <input type="text" id="nuevaEtiquetaNombre" class="form-control" placeholder="Nombre" />
+        <textarea id="nuevaEtiquetaDescripcion" class="form-control" rows="2" placeholder="Descripción (opcional)"></textarea>
+        <div class="btn-group">
+            <button type="button" id="guardarEtiqueta" class="btn btn-primary">Guardar</button>
+            <button type="button" id="cerrarModal" class="btn btn-outline">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="~/css/etiquetas.css" />
+    <link rel="stylesheet" href="~/css/transacciones.css" />
+    <script src="~/js/transacciones.js"></script>
+}

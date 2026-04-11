@@ -26,74 +26,127 @@
                 <p>Cuentas Activas</p>
             </div>
             <div class="stat-card">
-                <h3>0</h3>
+                <h3>@ViewBag.TransaccionesMes</h3>
                 <p>Registros este mes</p>
             </div>
         </div>
 
         <div class="quick-actions">
-            <h3>Acciones rápidas</h3>
+            <h3>Acciones rapidas</h3>
             <div class="action-buttons">
-                <a asp-controller="Cuentas" asp-action="Create" class="action-btn primary">
-                    Nueva Cuenta
+                <a asp-controller="Cuentas" asp-action="Create" class="action-btn-primary">
+                    <i class='bx bx-plus-circle'></i> Nueva Cuenta
                 </a>
-                <a href="#" class="action-btn success">
-                    Registrar Gasto
+                <a asp-controller="Transacciones" asp-action="Create" class="action-btn-success">
+                    <i class='bx bx-plus-circle'></i> Nuevo Registro
                 </a>
-                <a href="#" class="action-btn info">
-                    Registrar Ingreso
+                <a asp-controller="Etiquetas" asp-action="Index" class="action-btn-info">
+                    <i class='bx bx-tag'></i> Nueva Etiqueta
+                </a>
+                <a asp-controller="Transacciones" asp-action="Index" class="action-btn-warning">
+                    <i class='bx bx-list-ul'></i> Ver Registros
+                </a>
+                <a asp-controller="Etiquetas" asp-action="Index" class="action-btn-info">
+                    <i class='bx bx-tag'></i> Mis Etiquetas
                 </a>
             </div>
         </div>
 
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h3>Mis Cuentas</h3>
-                <a asp-controller="Cuentas" asp-action="Index" class="btn-link">Ver todas</a>
+        <div class="dashboard-grid">
+            
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Mis Cuentas</h3>
+                    <a asp-controller="Cuentas" asp-action="Index" class="btn-link">Ver todas →</a>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.UltimasCuentas != null && ((List<FinoraFinance.Models.Cuenta>)ViewBag.UltimasCuentas).Any())
+                    {
+                        <ul class="list-items">
+                            @foreach (var cuenta in (List<FinoraFinance.Models.Cuenta>)ViewBag.UltimasCuentas)
+                            {
+                                <li>
+                                    <span class="item-name">@cuenta.Nombre</span>
+                                    <span class="item-value">@cuenta.SaldoInicial.ToString("C")</span>
+                                    <span class="item-currency">@cuenta.Moneda</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="empty-message">No tienes cuentas creadas.</p>
+                        <a asp-controller="Cuentas" asp-action="Create" class="btn-sm">Crear primera cuenta</a>
+                    }
+                </div>
             </div>
-            <div class="card-body">
-                @if (ViewBag.UltimasCuentas != null && ((List<FinoraFinance.Models.Cuenta>)ViewBag.UltimasCuentas).Any())
-                {
-                    <ul class="list-items">
-                        @foreach (var cuenta in (List<FinoraFinance.Models.Cuenta>)ViewBag.UltimasCuentas)
-                        {
-                            <li>
-                                <span class="item-name">@cuenta.Nombre</span>
-                                <span class="item-value">@cuenta.SaldoInicial.ToString("C")</span>
-                                <span class="item-currency">@cuenta.Moneda</span>
-                            </li>
-                        }
+
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Ultimos movimientos</h3>
+                    <a asp-controller="Transacciones" asp-action="Index" class="btn-link">Ver todos →</a>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.UltimasTransacciones != null && ((List<FinoraFinance.Models.Transaccion>)ViewBag.UltimasTransacciones).Any())
+                    {
+                        <ul class="list-items">
+                            @foreach (var trans in (List<FinoraFinance.Models.Transaccion>)ViewBag.UltimasTransacciones)
+                            {
+                                <li>
+                                    <span class="item-name">@trans.Fecha.ToShortDateString() - @trans.Etiqueta?.Nombre</span>
+                                    <span class="item-value @(trans.Tipo == "Ingreso" ? "text-success" : "text-danger")">
+                                        @(trans.Tipo == "Ingreso" ? "+" : "-") @trans.Monto.ToString("C")
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="empty-message">No hay movimientos recientes.</p>
+                        <a asp-controller="Transacciones" asp-action="Create" class="btn-sm">Registrar primer movimiento</a>
+                    }
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Tips financieros</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="tips-list">
+                        <li>Registra tus gastos diarios para tener control total</li>
+                        <li>Define un presupuesto mensual por categoria</li>
+                        <li>Ahorra al menos el 20 por ciento de tus ingresos</li>
+                        <li>Revisa tus cuentas regularmente</li>
                     </ul>
-                }
-                else
-                {
-                    <p class="empty-message">No tienes cuentas creadas.</p>
-                    <a asp-controller="Cuentas" asp-action="Create" class="btn-sm">Crear primera cuenta</a>
-                }
+                </div>
             </div>
-        </div>
 
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h3>Tips financieros</h3>
-            </div>
-            <div class="card-body">
-                <ul class="tips-list">
-                    <li>Registra tus gastos diarios para tener control total</li>
-                    <li>Define un presupuesto mensual por categoría</li>
-                    <li>Ahorra al menos el 20 por ciento de tus ingresos</li>
-                    <li>Revisa tus cuentas regularmente</li>
-                </ul>
-            </div>
-        </div>
 
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h3>Actividad reciente</h3>
-            </div>
-            <div class="card-body">
-                <p class="empty-message">Aún no hay registros de gastos o ingresos.</p>
-                <a href="#" class="btn-sm">Registrar primer movimiento</a>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Tus etiquetas</h3>
+                    <a asp-controller="Etiquetas" asp-action="Index" class="btn-link">Administrar →</a>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.UltimasEtiquetas != null && ((List<FinoraFinance.Models.Etiqueta>)ViewBag.UltimasEtiquetas).Any())
+                    {
+                        <div class="etiquetas-cloud">
+                            @foreach (var etiqueta in (List<FinoraFinance.Models.Etiqueta>)ViewBag.UltimasEtiquetas)
+                            {
+                                <span class="etiqueta-tag">@etiqueta.Nombre</span>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="empty-message">No tienes etiquetas creadas.</p>
+                        <a asp-controller="Transacciones" asp-action="Create" class="btn-sm">Crear etiquetas al registrar</a>
+                    }
+                </div>
             </div>
         </div>
     }
@@ -111,10 +164,10 @@
         <div class="features">
             <div class="feature">
                 <h3>Control de gastos</h3>
-                <p>Registra y clasifica cada gasto para entender tus hábitos financieros.</p>
+                <p>Registra y clasifica cada gasto para entender tus habitos financieros.</p>
             </div>
             <div class="feature">
-                <h3>Múltiples cuentas</h3>
+                <h3>Multiples cuentas</h3>
                 <p>Administra tus cuentas bancarias y billeteras en un solo lugar.</p>
             </div>
             <div class="feature">

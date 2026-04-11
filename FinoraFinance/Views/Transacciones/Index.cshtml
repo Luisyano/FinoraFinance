@@ -1,0 +1,77 @@
+﻿@model List<FinoraFinance.Models.Transaccion>
+
+@{
+    ViewData["Title"] = "Mis Registros";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h2>Mis Registros</h2>
+        <h3>Historial de ingresos y gastos</h3>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="mb-4">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class='bx bx-plus'></i> Nuevo Registro
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class='bx bx-info-circle'></i> No tienes registros. Haz clic en "Nuevo Registro" para comenzar.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #333; color: #F4C542; background-color: #2A2A2A;">Fecha</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #333; color: #F4C542; background-color: #2A2A2A;">Tipo</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #333; color: #F4C542; background-color: #2A2A2A;">Cuenta</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #333; color: #F4C542; background-color: #2A2A2A;">Etiqueta</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #333; color: #F4C542; background-color: #2A2A2A;">Monto</th>
+                        <th style="padding: 12px; text-align: left; border-bottom: 1px solid #333; color: #F4C542; background-color: #2A2A2A;">Nota</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="border-bottom: 1px solid #333;">
+                            <td style="padding: 12px;">@item.Fecha.ToShortDateString()</td>
+                            <td style="padding: 12px;">
+                                @if (item.Tipo == "Ingreso")
+                                {
+                                    <span style="color: #4CAF50;"><i class='bx bx-dollar-circle'></i> @item.Tipo</span>
+                                }
+                                else if (item.Tipo == "Gasto")
+                                {
+                                    <span style="color: #F44336;"><i class='bx bx-shopping-bag'></i> @item.Tipo</span>
+                                }
+                                else
+                                {
+                                    <span style="color: #F4C542;"><i class='bx bx-pizza'></i> @item.Tipo</span>
+                                }
+                            </td>
+                            <td style="padding: 12px;">@item.Cuenta?.Nombre</td>
+                            <td style="padding: 12px;">@item.Etiqueta?.Nombre</td>
+                            <td style="padding: 12px;">
+                                <span style="@(item.Tipo == "Ingreso" ? "color: #4CAF50;" : "color: #F44336;") font-weight: bold;">
+                                    @(item.Tipo == "Ingreso" ? "+" : "-") @item.Monto.ToString("C")
+                                </span>
+                            </td>
+                            <td style="padding: 12px;">@item.Nota</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

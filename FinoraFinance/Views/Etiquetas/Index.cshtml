@@ -1,0 +1,85 @@
+﻿@model List<FinoraFinance.Models.Etiqueta>
+
+@{
+    ViewData["Title"] = "Mis Etiquetas";
+}
+
+<link rel="stylesheet" href="~/css/etiquetas.css" />
+
+<div class="card">
+    <div class="card-header">
+        <h2>Mis Etiquetas</h2>
+        <h3>Administra tus etiquetas para clasificar gastos</h3>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="mb-3">
+        <button type="button" class="btn btn-primary" id="btnNuevaEtiqueta">
+            <i class='bx bx-plus'></i> Nueva Etiqueta
+        </button>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class='bx bx-info-circle'></i> No tienes etiquetas creadas.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Nombre</td>
+                            <td>@item.Descripcion</td>
+                            <td>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('¿Eliminar esta etiqueta?');" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class='bx bx-trash'></i> Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+
+<div id="modalEtiqueta" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h3><i class='bx bx-tag'></i> Nueva Etiqueta</h3>
+        <input type="text" id="nuevaEtiquetaNombre" class="form-control" placeholder="Nombre" />
+        <textarea id="nuevaEtiquetaDescripcion" class="form-control" rows="2" placeholder="Descripción (opcional)"></textarea>
+        <div class="btn-group">
+            <button type="button" id="guardarEtiqueta" class="btn btn-primary">Guardar</button>
+            <button type="button" id="cerrarModal" class="btn btn-outline">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/etiquetas.js"></script>
+}
