@@ -11,9 +11,21 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <div class="welcome-card">
-            <h1>Hola, <span class="highlight">@User.Identity.Name</span></h1>
-            <p>Bienvenido a Finora Finance.</p>
+        <div class="welcome-card" style="display: flex; align-items: center; gap: 1rem;">
+            @if (!string.IsNullOrEmpty(ViewBag.FotoPerfil))
+            {
+                <img src="~/images/perfiles/@ViewBag.FotoPerfil" alt="Foto" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+            }
+            else
+            {
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--bg-hover); display: flex; align-items: center; justify-content: center;">
+                    <i class='bx bx-user' style="font-size: 2rem;"></i>
+                </div>
+            }
+            <div>
+                <h1>Hola, <span class="highlight">@User.Identity.Name</span></h1>
+                <p>Bienvenido a Finora Finance.</p>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -34,6 +46,9 @@
         <div class="quick-actions">
             <h3>Acciones rapidas</h3>
             <div class="action-buttons">
+                <a asp-controller="Account" asp-action="EditarPerfil" class="action-btn-info">
+                    <i class='bx bx-user'></i> Mi Perfil
+                </a>
                 <a asp-controller="Cuentas" asp-action="Create" class="action-btn-primary">
                     <i class='bx bx-plus-circle'></i> Nueva Cuenta
                 </a>

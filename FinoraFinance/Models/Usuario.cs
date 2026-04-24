@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace FinoraFinance.Models
 {
@@ -6,5 +7,8 @@ namespace FinoraFinance.Models
     {
         public string? Telefono { get; set; }
         public string? FullName { get; set; }
+
+        [Display(Name = "Foto de perfil")]
+        public string? FotoPerfil { get; set; }  
     }
 }

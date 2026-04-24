@@ -1,5 +1,6 @@
 ﻿using FinoraFinance.Data;
 using FinoraFinance.Models;
+using FinoraFinance.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -94,6 +95,37 @@ namespace FinoraFinance.Controllers
                 .ToListAsync();
 
             return View(transacciones);
+        }
+        public async Task<IActionResult> Lista(string search = "", string orden = "fecha_desc", int page = 1, int pageSize = 10)
+        {
+            var userId = _userManager.GetUserId(User);
+            var connectionString = _context.Database.GetDbConnection().ConnectionString;
+            var repo = new TransaccionRepository(connectionString);
+
+            var (items, total) = await repo.FiltrarPaginadoAsync(search, orden, page, pageSize, userId);
+
+            ViewBag.Search = search ?? "";
+            ViewBag.Orden = orden;
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalRegistros = total;
+            ViewBag.TotalPaginas = (int)Math.Ceiling((double)total / pageSize);
+
+            var transacciones = items.Select(dto => new Transaccion
+            {
+                Id = dto.Id,
+                Monto = dto.Monto,
+                Fecha = dto.Fecha,
+                Tipo = dto.Tipo,
+                Nota = dto.Nota,
+                CuentaId = dto.CuentaId,
+                EtiquetaId = dto.EtiquetaId,
+                UserId = dto.UserId,
+                Cuenta = new Cuenta { Nombre = dto.CuentaNombre, Moneda = dto.Moneda },
+                Etiqueta = new Etiqueta { Nombre = dto.EtiquetaNombre }
+            }).ToList();
+
+            return View("Index", transacciones); 
         }
     }
 }

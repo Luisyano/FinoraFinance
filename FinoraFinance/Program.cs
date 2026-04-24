@@ -16,7 +16,7 @@ builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// 🔽 ESTO ES LO IMPORTANTE - Configurar la redirección
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/IniciarSesion";
@@ -36,9 +36,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication();  // Primero autenticación
-app.UseAuthorization();   // Luego autorización
-
+app.UseAuthentication();  
+app.UseAuthorization();   
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

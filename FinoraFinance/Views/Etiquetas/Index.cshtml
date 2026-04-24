@@ -2,9 +2,110 @@
 
 @{
     ViewData["Title"] = "Mis Etiquetas";
+    int pagina = ViewBag.Page ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 0;
+    string busqueda = ViewBag.Search ?? "";
 }
+<style>
+    .search-container {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
 
-<link rel="stylesheet" href="~/css/etiquetas.css" />
+    .search-input {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    #btnBuscar {
+        background: #F4C542;
+        color: #121212;
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+        #btnBuscar:hover {
+            background: #FFE08A;
+            transform: translateY(-2px);
+        }
+
+    #btnLimpiar {
+        background: transparent;
+        border: 2px solid #F4C542;
+        color: #F4C542;
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+        #btnLimpiar:hover {
+            background: #F4C542;
+            color: #121212;
+            transform: translateY(-2px);
+        }
+
+    #btnNuevaEtiqueta {
+        background: #F4C542;
+        color: #121212;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+        #btnNuevaEtiqueta:hover {
+            background: #FFE08A;
+            transform: translateY(-2px);
+        }
+
+    nav.mt-3 {
+        margin-top: 2rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .page-link {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #2A2A2A;
+        border: 1px solid #333;
+        color: #B3B3B3;
+        border-radius: 8px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+        .page-link:hover {
+            background: #F4C542;
+            color: #121212;
+            transform: translateY(-2px);
+        }
+
+    .page-item.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+   
+</style>
 
 <div class="card">
     <div class="card-header">
@@ -22,17 +123,25 @@
         <div class="alert alert-success">@TempData["SuccessMessage"]</div>
     }
 
-    <div class="mb-3">
+    <div style="margin-bottom: 2.5rem;">
         <button type="button" class="btn btn-primary" id="btnNuevaEtiqueta">
             <i class='bx bx-plus'></i> Nueva Etiqueta
         </button>
     </div>
 
-    @if (!Model.Any())
+    <div class="search-container">
+        <input type="text" id="searchInput" class="form-control search-input" placeholder="Buscar etiqueta..." value="@busqueda" />
+        <button type="button" id="btnBuscar">
+            <i class='bx bx-search'></i> Buscar
+        </button>
+        <button type="button" id="btnLimpiar">
+            <i class='bx bx-refresh'></i> Limpiar
+        </button>
+    </div>
+    
+    @if (Model == null || !Model.Any())
     {
-        <div class="alert alert-info">
-            <i class='bx bx-info-circle'></i> No tienes etiquetas creadas.
-        </div>
+        <div class="alert alert-info">No tienes etiquetas creadas.</div>
     }
     else
     {
@@ -64,16 +173,38 @@
                 </tbody>
             </table>
         </div>
+
+        @if (totalPaginas > 1)
+        {
+            <nav class="mt-3">
+                <ul class="pagination">
+                    @if (pagina > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0);" onclick="irPagina(@(pagina - 1))">Anterior</a>
+                        </li>
+                    }
+                    <li class="page-item disabled">
+                        <span class="page-link">Página @pagina de @totalPaginas</span>
+                    </li>
+                    @if (pagina < totalPaginas)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0);" onclick="irPagina(@(pagina + 1))">Siguiente</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
     }
 </div>
 
-
-<div id="modalEtiqueta" class="modal" style="display:none;">
-    <div class="modal-content">
-        <h3><i class='bx bx-tag'></i> Nueva Etiqueta</h3>
-        <input type="text" id="nuevaEtiquetaNombre" class="form-control" placeholder="Nombre" />
-        <textarea id="nuevaEtiquetaDescripcion" class="form-control" rows="2" placeholder="Descripción (opcional)"></textarea>
-        <div class="btn-group">
+<div id="modalEtiqueta" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
+    <div style="background: #1e1e1e; padding: 2rem; border-radius: 16px; width: 90%; max-width: 400px;">
+        <h3 style="color: #F4C542; margin-bottom: 1rem; text-align: center;">Nueva Etiqueta</h3>
+        <input type="text" id="nuevaEtiquetaNombre" class="form-control" placeholder="Nombre" style="margin-bottom: 1rem;" />
+        <textarea id="nuevaEtiquetaDescripcion" class="form-control" rows="2" placeholder="Descripción (opcional)" style="margin-bottom: 1rem;"></textarea>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
             <button type="button" id="guardarEtiqueta" class="btn btn-primary">Guardar</button>
             <button type="button" id="cerrarModal" class="btn btn-outline">Cancelar</button>
         </div>
@@ -81,5 +212,64 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/etiquetas.js"></script>
+    <script>
+        function irPagina(pagina) {
+            var busqueda = document.getElementById('searchInput').value;
+            window.location.href = '@Url.Action("Index", "Etiquetas")?page=' + pagina + '&search=' + encodeURIComponent(busqueda);
+        }
+
+        document.getElementById('btnBuscar').addEventListener('click', function() {
+            var busqueda = document.getElementById('searchInput').value;
+            window.location.href = '@Url.Action("Index", "Etiquetas")?search=' + encodeURIComponent(busqueda);
+        });
+
+        document.getElementById('btnLimpiar').addEventListener('click', function() {
+            window.location.href = '@Url.Action("Index", "Etiquetas")';
+        });
+
+        var modal = document.getElementById('modalEtiqueta');
+        var btnNueva = document.getElementById('btnNuevaEtiqueta');
+        var cerrar = document.getElementById('cerrarModal');
+        var guardar = document.getElementById('guardarEtiqueta');
+
+        if (btnNueva) {
+            btnNueva.onclick = function() {
+                modal.style.display = 'flex';
+            };
+        }
+
+        if (cerrar) {
+            cerrar.onclick = function() {
+                modal.style.display = 'none';
+            };
+        }
+
+        if (guardar) {
+            guardar.onclick = function() {
+                var nombre = document.getElementById('nuevaEtiquetaNombre').value;
+                if (nombre) {
+                    fetch('/Etiquetas/CrearAjax', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            Nombre: nombre,
+                            Descripcion: document.getElementById('nuevaEtiquetaDescripcion').value
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload();
+                            }
+                        });
+                }
+            };
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
 }

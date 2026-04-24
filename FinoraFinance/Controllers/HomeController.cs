@@ -28,6 +28,7 @@ namespace FinoraFinance.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = _userManager.GetUserId(User);
+                var usuario = await _userManager.FindByIdAsync(userId);  
                 var hoy = DateTime.Now;
                 var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
                 var finMes = inicioMes.AddMonths(1).AddDays(-1);
@@ -55,6 +56,7 @@ namespace FinoraFinance.Controllers
 
                 var ultimasEtiquetas = etiquetas.Take(10).ToList();
 
+                ViewBag.FotoPerfil = usuario?.FotoPerfil;  
                 ViewBag.TotalCuentas = cuentas.Count;
                 ViewBag.SaldoTotal = cuentas.Sum(c => c.SaldoInicial);
                 ViewBag.UltimasCuentas = cuentas.OrderByDescending(c => c.Id).Take(5).ToList();
